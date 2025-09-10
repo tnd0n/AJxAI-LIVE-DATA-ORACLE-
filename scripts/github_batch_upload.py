@@ -32,8 +32,19 @@ class GitHubBatchUploader:
             print(f"❌ Error encoding {file_path}: {e}")
             return None
     
+    def get_file_sha(self, github_path):
+        """Get the SHA of an existing file"""
+        url = f"{self.base_url}/{github_path}"
+        try:
+            response = requests.get(url, headers=self.headers)
+            if response.status_code == 200:
+                return response.json().get('sha')
+            return None
+        except:
+            return None
+    
     def upload_file(self, local_path, github_path, commit_message):
-        """Upload single file to GitHub"""
+        """Upload single file to GitHub (handles both create and update)"""
         encoded_content = self.encode_file(local_path)
         if not encoded_content:
             return False
@@ -43,12 +54,18 @@ class GitHubBatchUploader:
             "content": encoded_content
         }
         
+        # Check if file exists and get SHA for updates
+        existing_sha = self.get_file_sha(github_path)
+        if existing_sha:
+            payload["sha"] = existing_sha
+        
         url = f"{self.base_url}/{github_path}"
         
         try:
             response = requests.put(url, headers=self.headers, json=payload)
             if response.status_code in [200, 201]:
-                print(f"✅ Uploaded: {github_path}")
+                action = "Updated" if existing_sha else "Created"
+                print(f"✅ {action}: {github_path}")
                 return True
             else:
                 print(f"❌ Failed to upload {github_path}: {response.status_code}")
