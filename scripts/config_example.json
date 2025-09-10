@@ -1,0 +1,7 @@
+{
+  "files": [
+    ["local_file_path", "github_file_path", "commit_message"],
+    ["backend/new_feature.py", "backend/new_feature.py", "✨ Add new feature implementation"],
+    ["frontend/dashboard.html", "frontend/dashboard.html", "🎨 Add dashboard frontend"]
+  ]
+}
