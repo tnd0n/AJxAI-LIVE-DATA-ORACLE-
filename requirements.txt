@@ -31,3 +31,8 @@ telethon
 uvicorn[standard]
 websockets
 requests
+aiosqlite
+sqlalchemy[asyncio]
+aiosqlite
+sqlalchemy[asyncio]
+telethon
